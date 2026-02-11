@@ -1,6 +1,6 @@
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import { Home, LogOut, User } from 'lucide-react';
+import { Home, LogOut, User, Calculator } from 'lucide-react';
 
 export default function Dashboard() {
   const { currentUser, logout } = useAuth();
@@ -25,6 +25,15 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold text-gray-900">FEMS</h1>
           </div>
           <div className="flex items-center gap-4">
+            {/* Calculator Button */}
+            <button
+              onClick={() => navigate('/calculator')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Calculator className="w-4 h-4" />
+              Calculator
+            </button>
+            
             <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
               <User className="w-5 h-5 text-gray-600" />
               <span className="text-sm text-gray-700">{currentUser?.email}</span>
@@ -65,12 +74,26 @@ export default function Dashboard() {
             </div>
 
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <h3 className="font-semibold text-purple-900 mb-2">🚀 What's Next?</h3>
-              <ul className="text-purple-700 text-sm space-y-1 ml-4 list-disc">
-                <li>Build your application features</li>
-                <li>Add more pages and components</li>
-                <li>Connect to your backend API</li>
-                <li>Deploy to production</li>
+              <h3 className="font-semibold text-purple-900 mb-2">🧮 Carbon Calculator</h3>
+              <p className="text-purple-700 text-sm mb-3">
+                Calculate the carbon footprint of your shipments and transportation.
+              </p>
+              <button
+                onClick={() => navigate('/calculator')}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                <Calculator className="w-4 h-4" />
+                Open Calculator
+              </button>
+            </div>
+
+            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+              <h3 className="font-semibold text-orange-900 mb-2">🚀 What's Next?</h3>
+              <ul className="text-orange-700 text-sm space-y-1 ml-4 list-disc">
+                <li>Calculate carbon emissions for your shipments</li>
+                <li>Track environmental impact</li>
+                <li>Optimize transportation routes</li>
+                <li>Generate sustainability reports</li>
               </ul>
             </div>
           </div>
