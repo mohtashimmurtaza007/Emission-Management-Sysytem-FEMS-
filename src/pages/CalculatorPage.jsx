@@ -1,116 +1,59 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import CarbonCalculatorForm from '../components/CarbonCalculatorForm';
 import { Calculator, MapPin, Navigation } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function CalculatorPage() {
+  const { currentUser } = useAuth();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // Calculate distance between two coordinates using Haversine formula
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const distance = R * c;
-    return distance;
-  };
+  const [error, setError] = useState('');
 
   const handleCalculate = async (formData) => {
     setLoading(true);
+    setError('');
     
-    // Simulate API call delay
-    setTimeout(() => {
-      // Calculate total weight
-      const totalWeight = formData.quantity * formData.tonnesPerUnit;
-      
-      // Calculate distance if coordinates are available
-      let distance = 500; // Default fallback distance
-      if (formData.originCoords && formData.destinationCoords) {
-        distance = calculateDistance(
-          formData.originCoords.lat,
-          formData.originCoords.lng,
-          formData.destinationCoords.lat,
-          formData.destinationCoords.lng
-        );
-      }
-      
-      // Emission factors (kg CO2 per tonne-km)
-      let emissionFactor = 0.1;
-      
-      switch(formData.transportMode) {
-        case 'truck':
-          // Base truck emission
-          emissionFactor = 0.12;
-          
-          // Adjust based on fuel type (if multiple selected, use average)
-          const selectedFuels = Object.keys(formData.fuelTypes).filter(
-            key => formData.fuelTypes[key]
-          );
-          
-          if (selectedFuels.length > 0) {
-            const fuelFactors = {
-              diesel: 0.12,
-              cng: 0.10,
-              bev: 0.04,
-              hvo: 0.08
-            };
-            
-            const avgFactor = selectedFuels.reduce((sum, fuel) => 
-              sum + fuelFactors[fuel], 0
-            ) / selectedFuels.length;
-            
-            emissionFactor = avgFactor;
-          }
-          break;
-          
-        case 'ship':
-          emissionFactor = 0.04;
-          break;
-          
-        case 'plane':
-          emissionFactor = 0.5;
-          break;
-          
-        case 'train':
-          emissionFactor = 0.03;
-          break;
-          
-        case 'intermodal':
-          emissionFactor = 0.08;
-          break;
-          
-        default:
-          emissionFactor = 0.1;
-      }
-      
-      // Add cooling factor (30% increase)
-      if (formData.cooledTransport) {
-        emissionFactor *= 1.3;
-      }
-      
-      // Calculate total carbon footprint
-      const carbonFootprint = totalWeight * distance * emissionFactor;
-      
-      // Calculate trees needed to offset (1 tree absorbs ~21 kg CO2 per year)
-      const treesNeeded = Math.ceil(carbonFootprint / 21);
-      
-      setResult({
-        carbonFootprint: carbonFootprint.toFixed(2),
-        totalWeight: totalWeight.toFixed(2),
-        distance: distance.toFixed(2),
+    try {
+      // Prepare data for API
+      const requestData = {
+        userId: currentUser?.uid || 'anonymous',
+        quantity: formData.quantity,
+        unit: formData.unit,
+        tonnesPerUnit: formData.tonnesPerUnit,
+        cooledTransport: formData.cooledTransport,
         transportMode: formData.transportMode,
-        treesNeeded: treesNeeded,
-        emissionFactor: emissionFactor.toFixed(4),
-        formData: formData
-      });
-      
+        fuelTypes: formData.fuelTypes,
+        origin: formData.origin,
+        destination: formData.destination,
+        originCoords: formData.originCoords,
+        destinationCoords: formData.destinationCoords,
+        originDetails: formData.originDetails,
+        destinationDetails: formData.destinationDetails
+      };
+
+      // Call backend API
+      debugger;
+      const response = await axios.post(`${API_URL}/api/calculate-carbon`, requestData);
+
+      if (response.data.success) {
+        setResult({
+          ...response.data.data,
+          calculationId: response.data.data.id,
+          formData: formData
+        });
+      } else {
+        setError(response.data.message || 'Calculation failed');
+      }
+
+    } catch (err) {
+      console.error('Calculation error:', err);
+      setError(err.response?.data?.message || 'Failed to calculate carbon footprint. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -129,6 +72,13 @@ export default function CalculatorPage() {
           </p>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+
         {/* Calculator Form */}
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
           <CarbonCalculatorForm onSubmit={handleCalculate} loading={loading} />
@@ -137,9 +87,14 @@ export default function CalculatorPage() {
         {/* Results Section */}
         {result && (
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Calculation Results
-            </h2>
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Calculation Results
+              </h2>
+              <div className="text-sm text-gray-500">
+                ID: {result.calculationId}
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Carbon Footprint */}
@@ -183,7 +138,7 @@ export default function CalculatorPage() {
                 <p className="text-2xl font-bold text-orange-900 capitalize">
                   {result.transportMode}
                 </p>
-                {result.formData.cooledTransport && (
+                {result.cooledTransport && (
                   <p className="text-sm text-orange-600 mt-1">+ Cooling</p>
                 )}
               </div>
@@ -207,7 +162,7 @@ export default function CalculatorPage() {
             </div>
 
             {/* Route Information */}
-            {result.formData.originCoords && result.formData.destinationCoords && (
+            {result.formData?.originCoords && result.formData?.destinationCoords && (
               <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
                 <h3 className="font-semibold text-blue-900 mb-4 flex items-center gap-2">
                   <Navigation className="w-5 h-5" />
@@ -219,11 +174,9 @@ export default function CalculatorPage() {
                     <div>
                       <p className="text-sm text-blue-700 font-medium">Origin</p>
                       <p className="text-blue-900 font-semibold">{result.formData.origin}</p>
-                      {result.formData.originDetails && (
-                        <p className="text-xs text-blue-600 mt-1">
-                          📍 {result.formData.originCoords.lat.toFixed(4)}, {result.formData.originCoords.lng.toFixed(4)}
-                        </p>
-                      )}
+                      <p className="text-xs text-blue-600 mt-1">
+                        📍 {result.formData.originCoords.lat.toFixed(4)}, {result.formData.originCoords.lng.toFixed(4)}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -231,11 +184,9 @@ export default function CalculatorPage() {
                     <div>
                       <p className="text-sm text-blue-700 font-medium">Destination</p>
                       <p className="text-blue-900 font-semibold">{result.formData.destination}</p>
-                      {result.formData.destinationDetails && (
-                        <p className="text-xs text-blue-600 mt-1">
-                          📍 {result.formData.destinationCoords.lat.toFixed(4)}, {result.formData.destinationCoords.lng.toFixed(4)}
-                        </p>
-                      )}
+                      <p className="text-xs text-blue-600 mt-1">
+                        📍 {result.formData.destinationCoords.lat.toFixed(4)}, {result.formData.destinationCoords.lng.toFixed(4)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -243,22 +194,22 @@ export default function CalculatorPage() {
             )}
 
             {/* Shipment Details */}
-            <div className="p-6 bg-gray-50 rounded-lg">
+            <div className="p-6 bg-gray-50 rounded-lg mb-6">
               <h3 className="font-semibold text-gray-900 mb-4">Shipment Details</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-600">Quantity:</span>
                   <span className="ml-2 font-medium text-gray-900">
-                    {result.formData.quantity} {result.formData.unit}
+                    {result.formData?.quantity} {result.formData?.unit}
                   </span>
                 </div>
                 <div>
                   <span className="text-gray-600">Weight per Unit:</span>
                   <span className="ml-2 font-medium text-gray-900">
-                    {result.formData.tonnesPerUnit} tonnes
+                    {result.formData?.tonnesPerUnit} tonnes
                   </span>
                 </div>
-                {result.formData.transportMode === 'truck' && (
+                {result.transportMode === 'truck' && result.formData?.fuelTypes && (
                   <div className="md:col-span-2">
                     <span className="text-gray-600">Fuel Types:</span>
                     <span className="ml-2 font-medium text-gray-900">
@@ -273,7 +224,7 @@ export default function CalculatorPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-6 flex justify-center gap-4">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={() => setResult(null)}
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"

@@ -1,6 +1,6 @@
-import { useAuth } from '../contexts/authContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Home, LogOut, User, Calculator } from 'lucide-react';
+import { Home, LogOut, User, Calculator, History } from 'lucide-react';
 
 export default function Dashboard() {
   const { currentUser, logout } = useAuth();
@@ -32,6 +32,15 @@ export default function Dashboard() {
             >
               <Calculator className="w-4 h-4" />
               Calculator
+            </button>
+
+            {/* History Button */}
+            <button
+              onClick={() => navigate('/history')}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              <History className="w-4 h-4" />
+              History
             </button>
             
             <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
@@ -76,24 +85,35 @@ export default function Dashboard() {
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
               <h3 className="font-semibold text-purple-900 mb-2">🧮 Carbon Calculator</h3>
               <p className="text-purple-700 text-sm mb-3">
-                Calculate the carbon footprint of your shipments and transportation.
+                Calculate the carbon footprint of your shipments with real distance calculations and automatic database storage.
               </p>
-              <button
-                onClick={() => navigate('/calculator')}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                <Calculator className="w-4 h-4" />
-                Open Calculator
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate('/calculator')}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <Calculator className="w-4 h-4" />
+                  Open Calculator
+                </button>
+                <button
+                  onClick={() => navigate('/history')}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  <History className="w-4 h-4" />
+                  View History
+                </button>
+              </div>
             </div>
 
             <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-              <h3 className="font-semibold text-orange-900 mb-2">🚀 What's Next?</h3>
+              <h3 className="font-semibold text-orange-900 mb-2">🚀 Features</h3>
               <ul className="text-orange-700 text-sm space-y-1 ml-4 list-disc">
-                <li>Calculate carbon emissions for your shipments</li>
-                <li>Track environmental impact</li>
-                <li>Optimize transportation routes</li>
-                <li>Generate sustainability reports</li>
+                <li>Real-time city search with coordinates</li>
+                <li>Accurate distance calculation using Haversine formula</li>
+                <li>Multiple transport modes and fuel types</li>
+                <li>Automatic database storage in Firebase Firestore</li>
+                <li>View your calculation history and statistics</li>
+                <li>Environmental impact with trees needed to offset</li>
               </ul>
             </div>
           </div>

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard-Firebase';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import CalculatorPage from './pages/CalculatorPage';
+import HistoryPage from './pages/HistoryPage';
 
 function App() {
   return (
@@ -30,6 +31,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <CalculatorPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <HistoryPage />
               </ProtectedRoute>
             }
           />
