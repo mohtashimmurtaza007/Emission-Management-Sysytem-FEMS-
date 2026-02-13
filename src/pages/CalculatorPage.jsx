@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/authContext';
 import CarbonCalculatorForm from '../components/CarbonCalculatorForm';
 import { Calculator, MapPin, Navigation } from 'lucide-react';
 import axios from 'axios';

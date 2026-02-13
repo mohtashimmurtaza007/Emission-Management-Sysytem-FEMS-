@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/authContext';
 import { carbonCalculatorAPI } from '../services/api';
 import { History, Trash2, Eye, Loader2 } from 'lucide-react';
 
