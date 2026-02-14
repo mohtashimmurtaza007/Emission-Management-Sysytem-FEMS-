@@ -63,13 +63,19 @@ export default function HistoryPage() {
     }
   };
 
-  const formatDate = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    
+ const formatDate = (timestamp) => {
+  if (!timestamp) return 'N/A';
+  
+  try {
     // Handle Firestore timestamp
-    const date = timestamp.seconds 
-      ? new Date(timestamp.seconds * 1000)
-      : new Date(timestamp);
+    const date = timestamp._seconds 
+      ? new Date(timestamp._seconds * 1000) 
+      : new Date(timestamp); // Handles ISO strings directly
+    debugger
+    // Validate the date
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
     
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -78,7 +84,11 @@ export default function HistoryPage() {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid Date';
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">

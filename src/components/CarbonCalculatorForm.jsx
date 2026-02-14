@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Truck, Ship, Plane, Train, Package, PlusCircle } from 'lucide-react';
 import LocationSelect from './LocationSelect';
+import MapComponent from './MapComponent';
 
 export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
   const [formData, setFormData] = useState({
@@ -145,6 +146,24 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
     { value: 'boxes', label: 'Boxes' },
     { value: 'pieces', label: 'Pieces' }
   ];
+
+  const handleOriginChange = (locationData) => {
+    setFormData(prev => ({
+      ...prev,
+      origin: locationData.name,
+      originCoords: locationData.coords,
+      originDetails: locationData.details
+    }));
+  };
+
+  const handleDestinationChange = (locationData) => {
+    setFormData(prev => ({
+      ...prev,
+      destination: locationData.name,
+      destinationCoords: locationData.coords,
+      destinationDetails: locationData.details
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl mx-auto">
@@ -356,6 +375,17 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
 
        
       </div>
+
+          <div className="form-section">
+            <h2>Location & Route</h2>
+            <MapComponent
+              originCoords={formData.originCoords}
+              destinationCoords={formData.destinationCoords}
+              onOriginChange={handleOriginChange}
+              onDestinationChange={handleDestinationChange}
+            />
+          </div>
+      
 
       {/* Calculate Button */}
       <div className="text-center">
