@@ -22,7 +22,8 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Home className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">FEMS</h1>
+           
+            <h1 className="text-2xl font-bold text-gray-900 text-black-50">FEMS</h1>
           </div>
           <div className="flex items-center gap-4">
             {/* Calculator Button */}
@@ -31,7 +32,7 @@ export default function Dashboard() {
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Calculator className="w-4 h-4" />
-              Calculator
+              Evaluate 
             </button>
 
             {/* History Button */}
@@ -83,17 +84,18 @@ export default function Dashboard() {
             </div>
 
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <h3 className="font-semibold text-purple-900 mb-2">🧮 Carbon Calculator</h3>
+              <h3 className="font-semibold text-purple-900 mb-2">🧮 FEMS Operation</h3>
               <p className="text-purple-700 text-sm mb-3">
-                Calculate the carbon footprint of your shipments with real distance calculations and automatic database storage.
+                Evaluate  footprint of your shipments with real distance measurement and automatic database storage.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => navigate('/calculator')}
+				  id='dashboard-button'
                   className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
                   <Calculator className="w-4 h-4" />
-                  Open Calculator
+                  Evaluate 
                 </button>
                 <button
                   onClick={() => navigate('/history')}

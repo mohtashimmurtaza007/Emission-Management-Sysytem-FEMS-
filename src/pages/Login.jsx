@@ -38,7 +38,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50  flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -46,7 +46,7 @@ export default function Login() {
             <Home className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">FEMS</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Please login to your account</p>
+          <p className="mt-2 text-gray-600 text-xl">Welcome back! Please login to your account</p>
         </div>
 
         {/* Login Form */}
@@ -72,16 +72,18 @@ export default function Login() {
                 </div>
                 <input
                   type="email"
+                   id='login-email'
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="you@example.com"
+                  maxLength={100}
                 />
               </div>
             </div>
 
-            {/* Password */}
+            {/* Password 1*/}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
@@ -92,18 +94,23 @@ export default function Login() {
                 </div>
                 <input
                   type="password"
+                  id='login-password'
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="••••••••"
+                  maxLength={15}
                 />
               </div>
             </div>
 
+        
+
             {/* Submit Button */}
             <button
               type="submit"
+              id='login-button'
               disabled={loading}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >

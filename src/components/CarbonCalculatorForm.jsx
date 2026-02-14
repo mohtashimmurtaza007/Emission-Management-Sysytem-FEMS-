@@ -46,6 +46,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
   };
 
   const handleTransportMode = (mode) => {
+    debugger;
     setFormData(prev => ({
       ...prev,
       transportMode: mode,
@@ -89,12 +90,12 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
       newErrors.transportMode = 'Please select a transport mode';
     }
 
-    if (formData.transportMode === 'truck') {
-      const hasFuelType = Object.values(formData.fuelTypes).some(value => value);
-      if (!hasFuelType) {
-        newErrors.fuelTypes = 'Please select at least one fuel type for truck transport';
-      }
-    }
+    // if (formData.transportMode === 'truck') {
+    //   const hasFuelType = Object.values(formData.fuelTypes).some(value => value);
+    //   if (!hasFuelType) {
+    //     newErrors.fuelTypes = 'Please select at least one fuel type for truck transport';
+    //   }
+    // }
 
     if (!formData.origin || formData.origin.trim().length < 2) {
       newErrors.origin = 'Origin location is required';
@@ -131,7 +132,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
   };
 
   const transportModes = [
-    { id: 'truck', icon: Truck, label: 'Truck' },
+  
     { id: 'ship', icon: Ship, label: 'Ship' },
     { id: 'plane', icon: Plane, label: 'Plane' },
     { id: 'train', icon: Train, label: 'Train' },
@@ -171,6 +172,8 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter quantity"
               required
+              min="1"
+              step="1"
             />
             {showValidation && errors.quantity && (
               <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>
@@ -210,8 +213,12 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
               onBlur={() => handleBlur('tonnesPerUnit')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="t"
-              step="0.01"
+            
               required
+              maxLength={2}
+               max={10}
+              min="1"
+              step="1"
             />
             {showValidation && errors.tonnesPerUnit && (
               <p className="text-red-500 text-sm mt-1">{errors.tonnesPerUnit}</p>
@@ -245,37 +252,23 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
               type="button"
               onClick={() => handleTransportMode('truck')}
               className={`flex flex-col items-center justify-center w-16 h-16 rounded-lg border-2 transition ${
-                formData.transportMode === 'truck'
+                formData.transportMode === 'Ship'
                   ? 'border-blue-600 bg-blue-600'
                   : 'border-gray-300 bg-white hover:border-blue-400'
               }`}
             >
               <Truck 
                 size={28} 
-                className={formData.transportMode === 'truck' ? 'text-white' : 'text-gray-600'} 
+                className={formData.transportMode === 'Ship' ? 'text-white' : 'text-gray-600'} 
               />
             </button>
 
             {/* Fuel Type Checkboxes */}
-            {formData.transportMode === 'truck' && (
-              <div className="flex items-center bg-blue-600 rounded-full px-4 py-2 space-x-3 flex-wrap">
-                {['diesel', 'cng', 'bev', 'hvo'].map((fuelType) => (
-                  <label key={fuelType} className="flex items-center text-white cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.fuelTypes[fuelType]}
-                      onChange={() => handleFuelTypeChange(fuelType)}
-                      className="w-4 h-4 mr-2 rounded"
-                    />
-                    <span className="text-xs font-medium uppercase">{fuelType}</span>
-                  </label>
-                ))}
-              </div>
-            )}
+       
           </div>
 
           {/* Other Transport Modes */}
-          {transportModes.slice(1).map(({ id, icon: Icon }) => (
+          {transportModes.slice().map(({ id, icon: Icon }) => (
             <button
               key={id}
               type="button"
@@ -361,13 +354,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
           />
         </div>
 
-        <button 
-          type="button" 
-          className="mt-4 flex items-center font-medium text-blue-600 hover:text-blue-700"
-        >
-          <PlusCircle size={20} className="mr-2" />
-          Add Another Route
-        </button>
+       
       </div>
 
       {/* Calculate Button */}
@@ -377,7 +364,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
           disabled={loading}
           className="bg-pink-500 hover:bg-pink-600 text-white px-12 py-4 rounded-lg font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {loading ? 'Calculating...' : 'Calculate Carbon Footprint'}
+          {loading ? 'Calculating...' : ' Evaluate Footprint'}
         </button>
       </div>
     </form>

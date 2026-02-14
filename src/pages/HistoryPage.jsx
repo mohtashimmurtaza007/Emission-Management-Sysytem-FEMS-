@@ -89,7 +89,7 @@ export default function HistoryPage() {
             <History className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Calculation History
+             FEMS Calculation History
           </h1>
           <p className="text-gray-600 text-lg">
             View and manage your carbon footprint calculations
@@ -105,7 +105,7 @@ export default function HistoryPage() {
             </div>
             
             <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-sm text-gray-600 mb-2">Total Carbon Footprint</p>
+              <p className="text-sm text-gray-600 mb-2">Total Footprint</p>
               <p className="text-3xl font-bold text-green-600">{stats.totalCarbonFootprint}</p>
               <p className="text-xs text-gray-500 mt-1">kg CO₂</p>
             </div>
