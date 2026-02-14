@@ -83,7 +83,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
 
     if (!formData.tonnesPerUnit || formData.tonnesPerUnit <= 0) {
       newErrors.tonnesPerUnit = 'Tonnes per unit is required and must be greater than 0';
-    } else if (formData.tonnesPerUnit > 1000) {
+    } else if (formData.tonnesPerUnit > 10) {
       newErrors.tonnesPerUnit = 'Tonnes per unit seems too high';
     }
 
