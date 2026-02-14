@@ -72,7 +72,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
       }
     }));
   };
-
+  // here we will add validation for the form fields before submission
   const validateForm = () => {
     const newErrors = {};
 
@@ -361,6 +361,7 @@ export default function CarbonCalculatorForm({ onSubmit, loading = false }) {
       <div className="text-center">
         <button
           type="submit"
+          id='carboncalculate-id'
           disabled={loading}
           className="bg-pink-500 hover:bg-pink-600 text-white px-12 py-4 rounded-lg font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
