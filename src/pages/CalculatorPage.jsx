@@ -15,7 +15,7 @@ export default function CalculatorPage() {
   const handleCalculate = async (formData) => {
     setLoading(true);
     setError('');
-    
+
     try {
       // Prepare data for API
       const requestData = {
@@ -65,10 +65,10 @@ export default function CalculatorPage() {
             <Calculator className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            FEMS Operation 
+            FEMS Operation
           </h1>
           <p className="text-gray-600 text-lg">
-           FEMS the environmental impact of your shipments
+            FEMS the environmental impact of your shipments
           </p>
         </div>
 
@@ -89,14 +89,14 @@ export default function CalculatorPage() {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex justify-between items-start mb-6">
               <h2 className="text-2xl font-bold text-gray-900">
-                
-Statistic Results
+
+                Statistic Results
               </h2>
               <div className="text-sm text-gray-500">
                 ID: {result.calculationId}
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {/* Carbon Footprint */}
               <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
@@ -223,6 +223,32 @@ Statistic Results
                 )}
               </div>
             </div>
+            {/* ============ NEW: COST DISPLAY ============ */}
+            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '8px' }}>
+              <strong style={{ color: '#666' }}>Transport Cost</strong>
+              <p style={{ fontSize: '24px', color: '#f57c00', margin: '5px 0', fontWeight: 'bold' }}>
+                ${result.transportCost?.toLocaleString()}
+              </p>
+              <small style={{ color: '#666' }}>Shipping fee</small>
+            </div>
+
+            <div style={{ padding: '15px', backgroundColor: 'white', borderRadius: '8px' }}>
+              <strong style={{ color: '#666' }}>Carbon Offset</strong>
+              <p style={{ fontSize: '24px', color: '#f57c00', margin: '5px 0', fontWeight: 'bold' }}>
+                ${result.carbonOffsetCost?.toLocaleString()}
+              </p>
+              <small style={{ color: '#666' }}>Environmental fee</small>
+            </div>
+
+            <div style={{ padding: '15px', backgroundColor: '#fff3e0', borderRadius: '8px', border: '2px solid #f57c00' }}>
+              <strong style={{ color: '#666' }}>Total Cost</strong>
+              <p style={{ fontSize: '28px', color: '#e65100', margin: '5px 0', fontWeight: 'bold' }}>
+                ${result.totalCost?.toLocaleString()}
+              </p>
+              <small style={{ color: '#666' }}>{result.currency || 'USD'}</small>
+            </div>
+            {/* ========================================== */}
+
 
             {/* Action Buttons */}
             <div className="flex justify-center gap-4">

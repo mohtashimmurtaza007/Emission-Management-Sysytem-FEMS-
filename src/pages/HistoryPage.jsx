@@ -21,7 +21,7 @@ export default function HistoryPage() {
     try {
       setLoading(true);
       const response = await carbonCalculatorAPI.getHistory(currentUser.uid, 50, 0);
-      
+
       if (response.success) {
         setCalculations(response.data);
       }
@@ -36,7 +36,7 @@ export default function HistoryPage() {
   const fetchStats = async () => {
     try {
       const response = await carbonCalculatorAPI.getStats(currentUser.uid);
-      
+
       if (response.success) {
         setStats(response.data);
       }
@@ -52,7 +52,7 @@ export default function HistoryPage() {
 
     try {
       const response = await carbonCalculatorAPI.deleteCalculation(id, currentUser.uid);
-      
+
       if (response.success) {
         setCalculations(prev => prev.filter(calc => calc.id !== id));
         fetchStats(); // Refresh stats
@@ -63,32 +63,43 @@ export default function HistoryPage() {
     }
   };
 
- const formatDate = (timestamp) => {
-  if (!timestamp) return 'N/A';
-  
-  try {
-    // Handle Firestore timestamp
-    const date = timestamp._seconds 
-      ? new Date(timestamp._seconds * 1000) 
-      : new Date(timestamp); // Handles ISO strings directly
-    debugger
-    // Validate the date
-    if (isNaN(date.getTime())) {
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
+
+    try {
+      // Handle Firestore timestamp
+      const date = timestamp._seconds
+        ? new Date(timestamp._seconds * 1000)
+        : new Date(timestamp); // Handles ISO strings directly
+
+      // Validate the date
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
       return 'Invalid Date';
     }
-    
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return 'Invalid Date';
-  }
-};
+  };
+  const formatCurrency = (amount, currency = 'USD') => {
+    if (amount === null || amount === undefined || isNaN(amount)) {
+      return '$0.00';
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
@@ -99,7 +110,7 @@ export default function HistoryPage() {
             <History className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-             FEMS Calculation History
+            FEMS Calculation History
           </h1>
           <p className="text-gray-600 text-lg">
             View and manage your carbon footprint calculations
@@ -113,19 +124,25 @@ export default function HistoryPage() {
               <p className="text-sm text-gray-600 mb-2">Total Calculations</p>
               <p className="text-3xl font-bold text-blue-600">{stats.calculationCount}</p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Total Footprint</p>
               <p className="text-3xl font-bold text-green-600">{stats.totalCarbonFootprint}</p>
               <p className="text-xs text-gray-500 mt-1">kg CO₂</p>
             </div>
-            
+            {/* <div className="bg-white rounded-lg shadow p-6">
+              <p className="text-sm text-gray-600 mb-2">Total Cost</p>
+              <p className="text-3xl font-bold text-green-600"> ${stats.totalCost}</p>
+              
+            </div> */}
+
+
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Total Distance</p>
               <p className="text-3xl font-bold text-purple-600">{stats.totalDistance}</p>
               <p className="text-xs text-gray-500 mt-1">km</p>
             </div>
-            
+
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Trees Needed</p>
               <p className="text-3xl font-bold text-emerald-600">{stats.treesNeeded}</p>
@@ -186,6 +203,9 @@ export default function HistoryPage() {
                       CO₂
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total Cost
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -220,6 +240,9 @@ export default function HistoryPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
                         {calc.carbonFootprint} kg
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-orange-600">
+                        {formatCurrency(calc?.totalCost)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
